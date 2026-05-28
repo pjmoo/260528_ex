@@ -23,6 +23,19 @@
         비밀번호 :
         <input id="password" name="password" type="password" required />
       </label>
+      <div>
+        <h3>시작 포켓몬</h3>
+        <label>
+          <input name="pokemon" type="radio" value="파이리" /> 파이리
+        </label>
+        <label>
+          <input name="pokemon" type="radio" value="꼬북이" /> 꼬북이
+        </label>
+        <label>
+          <input name="pokemon" type="radio" value="이상해씨" checked />
+          이상해씨
+        </label>
+      </div>
       <button>제출</button>
       <!-- <button type="submit">제출</button> 이게 디폴트 -->
       <!-- <button type="button">클릭</button> -->
@@ -36,6 +49,7 @@
         console.log("넌 못지나간다");
       });
       const form = document.querySelector("#joinForm");
+      //   click이 아니라 submit이다
       form.addEventListener("submit", (event) => {
         // 기본 작업이 submit -> GET/POST 통신 Form 작업
         event.preventDefault(); // 기본 Form 통신 X
@@ -45,6 +59,7 @@
         console.log(event.target);
         console.log(event.target.username.value);
         console.log(event.target.password.value);
+        console.log(event.target.pokemon.value);
         console.log("제출되었습니다!");
         // 3 - form - name / form 기본 제출 양식과 호응
         // https://ko.javascript.info/formdata
