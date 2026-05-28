@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>인풋과 폼</title>
+  </head>
+  <body>
+    <form id="myForm" style="padding: 24px">
+      <!-- <label
+        >이름 :
+        <input type="text" id="formName" />
+      </label> -->
+      <!-- 감싸기로 할 수도 있고, for로 id를 연결할 수 있음 -->
+      <label for="formName">이름 : </label>
+      <input
+        type="text"
+        id="formName"
+        placeholder="여기에 이름 입력"
+        maxlength="5"
+      />
+      <input type="number" step="10" id="num" />
+      <input type="color" />
+      <input type="date" />
+      <input type="range" />
+      <!-- 검증 => form -->
+      <!-- maxLength 믿으면 안된다 -->
+      <br />
+      <label for="formPassword">패스워드 : </label
+      ><input type="password" id="formPassword" />
+      <br />
+      <label for="formLongText">자기소개 : </label>
+      <textarea id="formLongText" style="resize: none"></textarea>
+      <!-- 중간에 노드가 안낌 -->
+      <!-- checkbox, radio, select -->
+      <br />
+      <input type="checkbox" id="check" /> <label for="check">제출 여부</label>
+      <br />
+      <select id="pet">
+        <option>강아지</option>
+        <option>고양이</option>
+        <option>햄스터</option>
+      </select>
+      <select id="pet2">
+        <option value="1">강아지</option>
+        <option value="2">고양이</option>
+        <option value="3">햄스터</option>
+      </select>
+    </form>
+    <button id="inputBtn">인풋 테스트용 버튼</button>
+    <script>
+      const nameInput = document.querySelector("#formName"); // id는 #
+      const passwordInput = document.querySelector("#formPassword");
+      const longTextInput = document.querySelector("#formLongText");
+      const inputBtn = document.querySelector("#inputBtn");
+      //   console.log(nameInput.value);
+      inputBtn.addEventListener("click", (event) => {
+        console.log("nameInput", nameInput.value);
+        console.log("passwordInput", passwordInput.value);
+        console.log("longTextInput", longTextInput.value);
+        // checkbox는 checked로 값을 확인
+        console.log(document.querySelector("#check").checked); // true/false
+        console.log(document.querySelector("#pet").value);
+        console.log(document.querySelector("#pet2").value);
+        console.log(typeof document.querySelector("#pet2").value);
+        // input에서 들어오는 값은 checked(boolean) 제외하고 일반적으로는 string
+        console.log(typeof document.querySelector("#num").value);
+      });
+    </script>
+  </body>
+</html>
