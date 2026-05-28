@@ -1,11 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BOM</title>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <div
+      style="background-color: aqua; height: 1000vh; border: 10px dashed black"
+    ></div>
+    <script>
+      console.log("this", this);
+      // 현재 스코프 범위를 감싸고 있는 객체.
+      console.log("globalThis", globalThis); // 명시적 전역객체
+      function f1() {
+        console.log("f1", this);
+      }
+      const f2 = function () {
+        console.log("f2", this);
+      };
+      const f3 = () => {
+        console.log("f3", this);
+      };
+      f1();
+      f2();
+      f3();
+      //   window.console
+      window.f1();
+      setTimeout(
+        () => console.log("setTimeout"),
+        // 함수
+        1000,
+        // 몇 초 뒤 이 함수를 실행할 것인가 (ms, 1/1000초)
+      );
+      // timeout과 구조는 같은데 1번으로 멈추지 않고 계속 실행
+      setInterval(() => console.log("setInterval"), 1000);
+      // window
+      // 브라우저 다른 정보 값들 보여주는 부분, 개발자도구 등을 빼고 순수하게 보여지는 곳
+      console.log(window.innerWidth);
+      console.log(window.innerHeight);
+      console.log(window.outerWidth);
+      console.log(window.outerHeight);
+      // scroll 관련된 것도 있음
+      console.log(window.scrollX);
+      console.log(window.scrollY);
+      //   scrollTo : 절대 위치 - 스크롤 좌표를 대입
+      //   setInterval(() => scrollTo(scrollX, scrollY + 50), 1000);
+      // scrollBy : 상대 위치 -> 지금 위치에서 +x, +y만큼 (밑으로, 오른쪽으로 가는게 각각 x+, y+)
+      setInterval(() => scrollBy(0, 50), 1000);
+      //   https://developer.mozilla.org/ko/docs/Web/API/Window/scroll
+    </script>
+  </body>
 </html>
