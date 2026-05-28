@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>메모 하세요!</title>
+  </head>
+  <body>
+    <section>
+      <!-- 작성  -->
+      <form id="writer" style="display: flex; gap: 8px">
+        <textarea required name="text" style="resize: none"></textarea>
+        <button>제출</button>
+      </form>
+    </section>
+    <section id="board">
+      <!-- 작성 결과물 -->
+    </section>
+    <script>
+      const writer = document.querySelector("#writer");
+      const board = document.querySelector("#board");
+
+      // TODO 3 : DOM Load하면서 LocalStorage에 저장된 내용으로 렌더링
+      document.addEventListener("DOMContentLoaded", () => {
+        const prevMemoData = localStorage.getItem("memoData") ?? "{}";
+        const memoData = JSON.parse(prevMemoData);
+        for (const id in memoData) {
+          const memo = document.createElement("p");
+          memo.textContent = memoData[id];
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "삭제";
+          removeBtn.addEventListener("click", () => {
+            memo.remove();
+            const prevMemoData = localStorage.getItem("memoData") ?? "{}";
+            const memoData = JSON.parse(prevMemoData);
+            const id = Date.now().toLocaleString();
+            // delete memoData[id];
+            memoData[id] = undefined;
+            localStorage.setItem("memoData", JSON.stringify(memoData));
+          });
+          memo.append(removeBtn);
+          board.append(memo);
+        }
+      });
+
+      writer.addEventListener("submit", (event) => {
+        event.preventDefault(); // 기본 폼 작업 X
+        const formData = new FormData(event.target);
+        const text = formData.get("text");
+        console.log("text", text);
+
+        // TODO 2-1 : LocalStorage 저장
+        const prevMemoData = localStorage.getItem("memoData") ?? "{}";
+        const memoData = JSON.parse(prevMemoData);
+        const id = Date.now().toLocaleString();
+        memoData[id] = text;
+        localStorage.setItem("memoData", JSON.stringify(memoData));
+
+        const memo = document.createElement("p");
+        memo.textContent = text;
+        board.append(memo);
+        // TODO 1 : 삭제 버튼
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "삭제";
+        memo.append(removeBtn);
+        removeBtn.addEventListener("click", () => {
+          memo.remove();
+          // TODO 2-2 : LocalStorage 삭제
+          const prevMemoData = localStorage.getItem("memoData") ?? "{}";
+          const memoData = JSON.parse(prevMemoData);
+          const id = Date.now().toLocaleString();
+          // delete memoData[id];
+          memoData[id] = undefined;
+          localStorage.setItem("memoData", JSON.stringify(memoData));
+        });
+      });
+    </script>
+  </body>
+</html>
