@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM CRUD</title>
+  </head>
+  <body>
+    <!-- DOM 조회 -->
+    <div>
+      <h1>DOM 조회</h1>
+      <p class="job">전사</p>
+      <p class="job">마법사</p>
+      <p class="job" id="healer">힐러</p>
+      <p>모험가</p>
+    </div>
+    <script>
+      const p1 = document.querySelector("p"); // 맨처음 검색
+      console.log(p1);
+      const p2 = document.querySelectorAll("p");
+      console.log(p2); // NodeList -> 하나하나 보기가 힘들다
+      console.log(p2[1]);
+      console.log(...p2);
+      const p3 = document.querySelector("#healer");
+      // id 조회시 # 붙여서
+      console.log(p3);
+      const p4 = document.querySelectorAll(".job"); // class 조회 시 . 붙여서
+      console.log(...p4);
+    </script>
+  </body>
+</html>

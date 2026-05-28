@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM CRUD</title>
+  </head>
+  <body>
+    <div>
+      <button onclick="addBox()">생성</button>
+      <h1>추가된 요소들</h1>
+      <div id="container"></div>
+    </div>
+    <script>
+      const container = document.querySelector("#container");
+      function addBox() {
+        // console.log("박스를 추가합니다");
+        // alert("박스를 추가합니다");
+        // confirm("박스를 추가합니다");
+        const content = prompt("추가할 내용을 넣어주세요");
+        console.log(content);
+        const box = document.createElement("p"); // 태그 이름 지정
+        // box.innerHTML = "박스 안에 텍스트";
+        // box.innerHTML = `<strong>태그를 넣으면</strong>`;
+        // box.innerHTML = `<button onclick="alert('해킹 당했습니다!')">부자가 되는 법, 꼭 확인하세요!</button>`;
+        // box.innerText = content;
+        // console.log(box.innerText);
+        // 실제적으로 마지막으로 렌더링(표현)된 텍스트를 가져옴
+        // 렌더링을 고려하기 때문에 상대적으로 느림
+        box.textContent = content; // 렌더링 상관 안하고 바로 집어넣거나 불러들이는 기능
+        container.append(box);
+      }
+    </script>
+  </body>
+</html>
