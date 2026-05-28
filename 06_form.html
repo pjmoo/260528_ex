@@ -1,12 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Form</title>
-</head>
-<body>
-    <form>
-
-</body>
+  </head>
+  <body>
+    <form
+      id="joinForm"
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 8px;
+      "
+    >
+      <!-- id는 라벨, target에서의 계층, css 선택자 -->
+      <label>
+        유저네임 : <input id="username" name="username" required />
+      </label>
+      <label>
+        비밀번호 :
+        <input id="password" name="password" type="password" required />
+      </label>
+      <button>제출</button>
+      <!-- <button type="submit">제출</button> 이게 디폴트 -->
+      <!-- <button type="button">클릭</button> -->
+    </form>
+    <a href="https://google.com" id="link">링크</a>
+    <script>
+      document.querySelector("#link").addEventListener("click", (event) => {
+        event.preventDefault(); // 의미상으로 맨 앞에 배치
+        // 실질적으로는 기본 이벤트가 맨뒤에 처리가 되어서
+        // 있기만 하면 된다
+        console.log("넌 못지나간다");
+      });
+      const form = document.querySelector("#joinForm");
+      form.addEventListener("submit", (event) => {
+        // 기본 작업이 submit -> GET/POST 통신 Form 작업
+        event.preventDefault(); // 기본 Form 통신 X
+        // dom을 정의해서 호출해서 써야겠다
+        // 1 - selector
+        // 2 - event.target -> 아래 있는 요소들을 id, name로 조회하는 방법
+        console.log(event.target);
+        console.log(event.target.username.value);
+        console.log(event.target.password.value);
+        console.log("제출되었습니다!");
+        // 3 - form - name / form 기본 제출 양식과 호응
+        // https://ko.javascript.info/formdata
+        const formData = new FormData(event.target);
+        console.log(formData.get("username"));
+        console.log(...formData); // entries -> ...
+        // 객체화
+        console.log(Object.fromEntries(formData));
+      });
+    </script>
+  </body>
 </html>
