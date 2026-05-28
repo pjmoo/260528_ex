@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Listener</title>
+  </head>
+  <body>
+    <h1>Event 연결 방법</h1>
+    <!-- 함수 객체를 넣는게 아니라 함수 실행문 => 코드 자체를 넣음 -->
+    <!-- HTML 권장 => 값들을 ""로 묶어서 제공이 권장  -->
+    <button id="btn1" onclick="console.log('버튼1입니다')">버튼1</button>
+    <button id="btn2">버튼2</button>
+    <button id="btn3">버튼3</button>
+    <script>
+      const btn2 = document.querySelector("#btn2");
+      btn2.onclick = function () {
+        console.log("버튼2입니다");
+      }; // 프로퍼티 방식은 함수를 넣는다 (선언, 표현, 익명, 화살표...)
+      btn2.onclick = function () {
+        console.log("눌러주셔서 감사합니다"); // 2개 이상이 안된다
+      }; // 마지막에 넣은게 덮어씌워짐
+      const btn3 = document.querySelector("#btn3");
+      // 추가 순서가 곧 실행 스타트인데, 순차적으로 되는 개념 X.
+      btn3.addEventListener("click", () => {
+        setTimeout(() => console.log("버튼3입니다"), 3000);
+      });
+      btn3.addEventListener("click", () => {
+        console.log("잘 누르셨어요");
+      });
+      // 병렬로 들어가되 추가된 순서에 따라서 작동 -> 작업 자체가 오래 걸리거나 비동기적인게 들어가면 종료의 순서를 다를 수 있음
+
+      // 지울 때는 함수의 정보가 필요 -> 함수표현식 등에 쓰이는 익명함수는 지울 수 없음
+      const f = () => {
+        console.log("저는 지울 수 있어요");
+        btn3.removeEventListener("click", f); // 일회용으로 만든다
+      };
+      btn3.addEventListener("click", f);
+    </script>
+  </body>
+</html>
