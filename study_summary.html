@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프론트엔드 핵심 요약 & 실시간 대시보드 🌟</title>
+  <!-- Google Fonts Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Dosis:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 디자인 시스템 및 공통 CSS */
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(22, 28, 45, 0.7);
+      --bg-sidebar: #0f172a;
+      --border-color: rgba(255, 255, 255, 0.08);
+      
+      --color-primary: #8b5cf6;     /* 펄 보라 */
+      --color-primary-glow: rgba(139, 92, 246, 0.15);
+      --color-secondary: #06b6d4;   /* 아쿠아 시안 */
+      --color-success: #10b981;     /* 에메랄드 */
+      --color-warning: #f59e0b;     /* 호박색 */
+      --color-danger: #ef4444;      /* 장미색 */
+      
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-outfit: 'Outfit', 'Inter', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* 사이드바 스타일 */
+    aside {
+      width: 280px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 24px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-outfit);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+
+    .logo-title {
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 1.15rem;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 4px;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      width: 4px;
+    }
+    .nav-links::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .nav-item a:hover {
+      color: var(--text-main);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item.active a {
+      color: #fff;
+      background: var(--color-primary-glow);
+      border-color: rgba(139, 92, 246, 0.3);
+      font-weight: 600;
+    }
+
+    .nav-item span.badge {
+      font-size: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: auto;
+      color: var(--text-muted);
+    }
+
+    /* 메인 콘텐츠 영역 */
+    main {
+      margin-left: 280px;
+      flex-grow: 1;
+      padding: 40px 48px;
+      max-width: 1200px;
+      width: calc(100% - 280px);
+    }
+
+    /* 헤더 */
+    header {
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .header-sub {
+      color: var(--color-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      font-family: var(--font-outfit);
+    }
+
+    .header-title {
+      font-family: var(--font-outfit);
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .header-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* 섹션 카드 */
+    section {
+      background-color: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 48px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      scroll-margin-top: 40px;
+    }
+
+    section:hover {
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.05);
+    }
+
+    .sec-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 16px;
+    }
+
+    .sec-number {
+      font-family: var(--font-outfit);
+      font-size: 1rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sec-title {
+      font-family: var(--font-outfit);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 설명 텍스트 */
+    .theory-box {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .theory-box p {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .highlight-tip {
+      background-color: rgba(6, 182, 212, 0.06);
+      border-left: 4px solid var(--color-secondary);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      color: #9cdffd;
+    }
+
+    .highlight-warn {
+      background-color: rgba(239, 68, 68, 0.06);
+      border-left: 4px solid var(--color-danger);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      color: #fca5a5;
+    }
+
+    /* 코드 뷰어 */
+    .code-container {
+      background-color: #05070f;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #a7f3d0;
+      overflow-x: auto;
+      max-height: 250px;
+    }
+
+    .btn-copy {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    /* 실시간 체험존 (Playground) */
+    .playground {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .playground-title {
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .playground-title::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--color-success);
+    }
+
+    /* 버튼 및 인풋 커스텀 */
+    .btn {
+      background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--color-danger), #dc2626);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+    }
+
+    .input-text {
+      background-color: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      width: 100%;
+    }
+
+    .input-text:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.25);
+    }
+
+    /* 실시간 로그 터미널 */
+    .terminal-log {
+      background-color: #030712;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    .terminal-log .log-line {
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .terminal-log .log-prefix {
+      color: var(--color-success);
+    }
+
+    /* 1. DOM 조회 가상 시각화 */
+    .dom-preview-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #1e293b;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .dom-preview-item {
+      padding: 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dom-preview-item.highlighted {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--color-primary);
+      transform: scale(1.02);
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+    }
+
+    .dom-preview-item p {
+      font-weight: 500;
+    }
+
+    .dom-preview-item span.tag {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    /* 2. DOM 조작 스타일 */
+    .sandbox-container {
+      background: #1e293b;
+      min-height: 120px;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-content: flex-start;
+    }
+
+    .dynamic-box {
+      background-color: #334155;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #fff;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .dynamic-box.switch {
+      background-color: greenyellow;
+      color: #000;
+    }
+
+    .dynamic-box.border {
+      border: 2px solid salmon;
+    }
+
+    .dynamic-box button {
+      background: rgba(0, 0, 0, 0.2);
+      border: none;
+      color: inherit;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .dynamic-box button:hover {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* 5. 다양한 인풋 결과 테이블 */
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+
+    .result-table th, .result-table td {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .result-table th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--color-secondary);
+    }
+
+    .result-type-badge {
+      background-color: rgba(139, 92, 246, 0.2);
+      color: #c084fc;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+
+    /* 6. Form 데이터 트리 */
+    .json-output {
+      background: #030712;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Consolas', monospace;
+      color: #a7f3d0;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+
+    /* 7. BOM 제어판 */
+    .bom-info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .bom-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .bom-stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .bom-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .bom-stat-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      font-family: var(--font-outfit);
+    }
+
+    .timer-progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .timer-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      transition: width 0.1s linear;
+    }
+
+    /* 8. 스토리지 시각화 */
+    .storage-playground-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .storage-visual-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .storage-col {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .storage-col-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .storage-count-badge {
+      background: var(--color-primary-glow);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #d8b4fe;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* 9. 메모 앱 데모 */
+    .memo-section {
+      background: linear-gradient(135deg, rgba(22, 28, 45, 0.8), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    
+    .memo-form {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .memo-textarea {
+      flex-grow: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px;
+      font-size: 0.9rem;
+      resize: none;
+      height: 60px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .memo-textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+    }
+    
+    .memo-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      min-height: 80px;
+    }
+    
+    .memo-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      animation: popIn 0.3s ease;
+    }
+    
+    .memo-card-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+    }
+    
+    .memo-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 8px;
+    }
+
+    .memo-delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-danger);
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .memo-delete-btn:hover {
+      color: #f87171;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 좌측 내비게이션 사이드바 -->
+  <aside>
+    <div class="logo-container">
+      <div class="logo-badge">JS</div>
+      <div class="logo-title">Web Core Summary</div>
+    </div>
+    
+    <ul class="nav-links">
+      <li class="nav-item active"><a href="#dom-read">1. DOM 조회 <span class="badge">Read</span></a></li>
+      <li class="nav-item"><a href="#dom-manage">2. DOM 조작 <span class="badge">Manage</span></a></li>
+      <li class="nav-item"><a href="#event-listener">3. 이벤트 리스너 <span class="badge">Listener</span></a></li>
+      <li class="nav-item"><a href="#event-type">4. 이벤트 타입 <span class="badge">Types</span></a></li>
+      <li class="nav-item"><a href="#inputs">5. 다양한 Input <span class="badge">Inputs</span></a></li>
+      <li class="nav-item"><a href="#forms">6. Form 제출 & 객체화 <span class="badge">Forms</span></a></li>
+      <li class="nav-item"><a href="#bom">7. BOM (브라우저 객체) <span class="badge">BOM</span></a></li>
+      <li class="nav-item"><a href="#storage">8. 스토리지 & 클립 <span class="badge">Storage</span></a></li>
+      <li class="nav-item"><a href="#memo-app">🚀 실전: 메모 앱 <span class="badge" style="background-color: var(--color-primary); color: #fff;">App</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- 메인 본문 콘텐츠 -->
+  <main>
+    <header>
+      <div class="header-sub">Frontend Study Guide</div>
+      <h1 class="header-title">오늘 배운 핵심 개념 실시간 대시보드</h1>
+      <p class="header-desc">
+        오늘 공부한 8가지 핵심 주제 및 실무 응용 메모 앱을 손쉽게 정리했습니다.<br>
+        <strong>왼쪽의 개념을 클릭해 스크롤할 수 있고, 오른쪽 [실시간 체험존]에서 코드가 동작하는 모습을 바로 확인하세요!</strong>
+      </p>
+    </header>
+
+    <!-- 1. DOM 조회 -->
+    <section id="dom-read">
+      <div class="sec-header">
+        <span class="sec-number">01</span>
+        <h2 class="sec-title">DOM 조회 (DOM Reading)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            HTML 요소를 JavaScript로 가져오는 명령어입니다. 가장 대표적인 도구는 <strong><code>querySelector</code></strong>와 <strong><code>querySelectorAll</code></strong>입니다.
+          </p>
+          <div class="highlight-tip">
+            📌 <strong>선택자 꿀팁!</strong><br>
+            - 태그 이름만 적기: <code>"p"</code><br>
+            - 고유 ID 가져오기: <code>"#healer"</code> (앞에 샵(#)을 붙임)<br>
+            - 공통 클래스 가져오기: <code>".job"</code> (앞에 점(.)을 붙임)
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 최초 1개의 요소만 검색
+const healer = document.querySelector("#healer");
+
+// 2. 클래스가 job인 모든 요소를 찾아 배열형태로 반환
+const jobs = document.querySelectorAll(".job");
+console.log(...jobs); // 전개연산자로 펼쳐보기</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: DOM 조회</div>
+          <div class="dom-preview-area">
+            <div class="dom-preview-item job" id="fighter-item">
+              <p>⚔️ 전사 (class="job")</p>
+              <span class="tag">&lt;p class="job"&gt;</span>
+            </div>
+            <div class="dom-preview-item job" id="mage-item">
+              <p>🔮 마법사 (class="job")</p>
+              <span class="tag">&lt;p class="job"&gt;</span>
+            </div>
+            <div class="dom-preview-item job" id="healer-item">
+              <p>💖 힐러 (class="job", id="healer")</p>
+              <span class="tag">&lt;p class="job" id="healer"&gt;</span>
+            </div>
+            <div class="dom-preview-item" id="adventurer-item">
+              <p>🎒 모험가 (일반 태그)</p>
+              <span class="tag">&lt;p&gt;</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="selectDom('first-p')">p (첫 요소)</button>
+            <button class="btn btn-secondary btn-sm" onclick="selectDom('id-healer')">#healer (ID)</button>
+            <button class="btn btn-secondary btn-sm" onclick="selectDom('class-job')">.job (클래스 전체)</button>
+            <button class="btn btn-secondary btn-sm" onclick="selectDom('reset')">선택 초기화</button>
+          </div>
+          <div class="terminal-log" id="dom-read-log">
+            <div class="log-line"><span class="log-prefix">&gt;</span> 대상을 클릭하여 검색 결과를 터미널 로그로 확인해 보세요.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. DOM 조작 -->
+    <section id="dom-manage">
+      <div class="sec-header">
+        <span class="sec-number">02</span>
+        <h2 class="sec-title">DOM 조작 (DOM Managing)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            새로운 HTML 요소를 동적으로 만들고, 스타일과 클래스를 변경하며, 화면에 붙이고 떼어내는 기술입니다.
+          </p>
+          <div class="highlight-warn">
+            ⚠️ <strong>보안 수칙! innerHTML vs textContent</strong><br>
+            <code>innerHTML</code>은 사용자의 입력을 날것 그대로 렌더링하므로 해킹(XSS 공격)에 매우 취약합니다. 단순 글씨를 넣을 때는 안전하고 속도가 빠른 <code>textContent</code>를 사용하세요.
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 요소 생성
+const box = document.createElement("p");
+box.textContent = "안전한 텍스트";
+
+// 2. 클래스 추가 및 토글
+box.classList.add("switch", "border");
+box.addEventListener("click", () => box.classList.toggle("switch"));
+
+// 3. style 조작 (CamelCase 적용 필수)
+box.style.fontSize = "24px"; // font-size (X)
+
+// 4. 화면 추가 및 제거
+container.append(box);
+box.remove(); // 스스로 삭제</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: DOM 생성/토글/삭제</div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="input-text" id="dom-input-text" placeholder="추가할 박스 내용을 적어보세요..." value="JavaScript는 재밌어!">
+            <button class="btn" style="flex-shrink: 0;" onclick="createDynamicBox()">생성</button>
+          </div>
+          <div class="sandbox-container" id="sandbox">
+            <div class="dynamic-box border">
+              기본 제공 박스 (클릭시 클래스 토글)
+              <button onclick="this.parentElement.remove()">X</button>
+            </div>
+          </div>
+          <div class="terminal-log" id="dom-manage-log">
+            <div class="log-line"><span class="log-prefix">&gt;</span> 생성한 박스를 클릭하면 .classList.toggle('switch')가 실행되어 배경색이 변합니다. X 버튼을 클릭하면 .remove()가 작동합니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 이벤트 리스너 -->
+    <section id="event-listener">
+      <div class="sec-header">
+        <span class="sec-number">03</span>
+        <h2 class="sec-title">이벤트 리스너 (Event Listener)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            웹사이트에서 클릭, 키보드 입력, 마우스 이동 등 특정 행동이 감지되었을 때 미리 정의한 코드가 예약 실행되게끔 설정하는 방법입니다.
+          </p>
+          <div class="highlight-tip">
+            ⭐ <strong>addEventListener가 좋은 이유:</strong><br>
+            1. 하나의 버튼에 **여러 개의 서로 다른 동작**을 병렬로 등록할 수 있습니다.<br>
+            2. 이벤트를 원할 때 지울 수도 있어 메모리 관리에 효율적입니다.
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 프로퍼티 방식 (덮어쓰기 위험이 있음)
+btn.onclick = () => console.log("작동되지 않음");
+btn.onclick = () => console.log("마지막 이벤트만 작동!");
+
+// 2. 리스너 방식 (모든 리스너가 누적 실행됨)
+btn.addEventListener("click", () => console.log("액션 1"));
+btn.addEventListener("click", () => console.log("액션 2"));
+
+// 3. 지울 때는 반드시 함수의 레퍼런스(이름)가 필요함
+const runOnce = () => {
+  console.log("한 번만 실행되고 지워짐!");
+  btn.removeEventListener("click", runOnce);
+};
+btn.addEventListener("click", runOnce);</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: 이벤트 연결 & 지우기</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-secondary" id="btn-prop-test">프로퍼티 버튼 (연달아 연결 시도)</button>
+            <button class="btn" id="btn-listener-test">addEventListener 버튼 (복수 등록)</button>
+            <button class="btn btn-danger" id="btn-once-test">1회용 버튼 (클릭시 자기 자신 리스너 해제)</button>
+          </div>
+          <div class="terminal-log" id="event-log" style="max-height: 140px;">
+            <div class="log-line"><span class="log-prefix">&gt;</span> 버튼들을 눌러 실행 결과가 터미널 로그에 쌓이는 차이점을 관찰해 보세요.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 이벤트 타입 -->
+    <section id="event-type">
+      <div class="sec-header">
+        <span class="sec-number">04</span>
+        <h2 class="sec-title">이벤트 타입 & 진입점 (Event Types)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            웹 브라우저의 대표적인 진입점 이벤트와 입력창의 상태 변화에 따른 이벤트 4인방을 알아봅니다.
+          </p>
+          <div class="highlight-tip">
+            📁 <strong>DOMContentLoaded:</strong><br>
+            HTML 구조가 브라우저에 전부 뿌려진 직후 발동되므로, 스크립트 파일이 HTML 코드보다 앞서 실행되어 발생하는 <code>null pointer error</code>를 원천 차단하는 진입점 역할을 합니다.
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. DOM 진입점 설정
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("HTML이 로드되었으므로 이제 안심하고 요소를 검색하세요!");
+});
+
+// 2. 대표 입력창 이벤트
+input.addEventListener("input", (e) => console.log("타이핑 실시간 감지: ", e.target.value));
+input.addEventListener("change", (e) => console.log("포커스가 풀려 입력 확정: ", e.target.value));
+input.addEventListener("focus", () => console.log("입력창에 커서 켜짐"));
+input.addEventListener("blur", () => console.log("입력창 탈출"));</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: 입력창 상태 실시간 감지</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="event-test-input" style="font-size: 0.85rem; color: var(--text-muted);">실시간 감지 입력창:</label>
+            <input type="text" class="input-text" id="event-test-input" placeholder="글씨를 입력하거나 클릭해 포커스를 옮겨보세요.">
+          </div>
+          <div style="font-size: 0.9rem; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; display: flex; justify-content: space-between;">
+            <span>실시간 입력값: <strong id="realtime-text" style="color: var(--color-secondary);">-</strong></span>
+            <span>입력 글자수: <strong id="realtime-len" style="color: var(--color-success);">0</strong>자</span>
+          </div>
+          <div class="terminal-log" id="event-type-log" style="max-height: 110px;">
+            <div class="log-line"><span class="log-prefix">&gt;</span> focus, blur, input, change 이벤트의 실시간 반응 로그가 기록됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 다양한 Input -->
+    <section id="inputs">
+      <div class="sec-header">
+        <span class="sec-number">05</span>
+        <h2 class="sec-title">다양한 Input과 값 가져오기 (Inputs)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            웹에서 사용하는 입력 도구들의 특성과 JS에서 그 타입 및 체크 상태를 읽는 정밀 제어 방식입니다.
+          </p>
+          <div class="highlight-warn">
+            🚨 <strong>주의: input value의 근본적 특징</strong><br>
+            체크박스(<code>checked</code> 불리언 값)를 제외한 <code>type="number"</code>, <code>type="range"</code> 등은 화면상 숫자처럼 보일지 몰라도 JavaScript로 읽어올 때는 <strong>항상 문자열(string) 타입</strong>으로 읽어집니다. 따라서 산술 계산 시 형변환이 필수입니다!
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 일반 텍스트 및 숫자 입력값 읽기
+console.log(typeof numInput.value); // "string"
+
+// 2. 체크박스는 value가 아닌 checked를 읽어와야 함
+const isChecked = checkbox.checked; // true / false (Boolean)
+
+// 3. 셀렉트 박스의 선택값
+const petType = selectBox.value; // "강아지" 등</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: 폼 인풋 데이터 실시간 디버거</div>
+          <form id="interactive-inputs-form" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <label for="form-age" style="width: 80px; font-size: 0.85rem;">나이(Number):</label>
+              <input type="number" id="form-age" class="input-text" value="25" style="width: 100px;">
+              
+              <label for="form-color" style="width: 80px; font-size: 0.85rem; margin-left: 20px;">색상:</label>
+              <input type="color" id="form-color" value="#8b5cf6" style="border: none; background: transparent; width: 50px; height: 35px; cursor: pointer;">
+            </div>
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <label for="form-satisfaction" style="width: 80px; font-size: 0.85rem;">만족도(Range):</label>
+              <input type="range" id="form-satisfaction" min="1" max="100" value="80" style="flex-grow: 1;">
+            </div>
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <label for="form-pet" style="width: 80px; font-size: 0.85rem;">반려동물:</label>
+              <select id="form-pet" class="input-text" style="width: 120px;">
+                <option value="1">강아지 🐶</option>
+                <option value="2">고양이 🐱</option>
+                <option value="3">햄스터 🐹</option>
+              </select>
+              
+              <label style="margin-left: auto; display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85rem;">
+                <input type="checkbox" id="form-agree" checked> 약관동의 (Checkbox)
+              </label>
+            </div>
+          </form>
+          
+          <button class="btn" onclick="debugInputValues()">인풋 데이터 타입 & 값 분석하기</button>
+          
+          <table class="result-table">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>속성명</th>
+                <th>수집값 (JS 리턴)</th>
+                <th>데이터 타입</th>
+              </tr>
+            </thead>
+            <tbody id="input-debug-body">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-muted);">위 버튼을 클릭하여 입력을 캡처해 분석하세요.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Form 제출 -->
+    <section id="forms">
+      <div class="sec-header">
+        <span class="sec-number">06</span>
+        <h2 class="sec-title">Form 제출 & 객체화 (Forms)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            폼의 기본 전송 행동으로 페이지가 새로고침되는 것을 막고, 입력받은 대량의 정보를 <code>FormData</code>를 통해 매우 빠르고 세련되게 추출해 객체 형태로 가공하는 방식입니다.
+          </p>
+          <div class="highlight-tip">
+            📁 <strong>preventDefault() 와 FormData</strong><br>
+            - <code>event.preventDefault()</code>: 폼 제출 시 깜빡이면서 새로고침되는 브라우저의 기본 처리를 완전 차단합니다.<br>
+            - <code>new FormData(form)</code>: 폼 내의 <code>name</code> 속성을 기준으로 데이터를 자동 바인딩합니다.<br>
+            - <code>Object.fromEntries(formData)</code>: 데이터를 보기 쉬운 깔끔한 JS 객체(JSON 구조)로 원클릭 변환합니다.
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>form.addEventListener("submit", (event) => {
+  event.preventDefault(); // 기본 새로고침을 무효화
+  
+  // name 속성값을 가진 인풋들을 객체화
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData);
+  
+  console.log(data); // { username: "윌리엄", pokemon: "꼬북이" }
+});</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: FormData 직렬화 테스트</div>
+          <form id="example-join-form" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="reg-username" style="font-size: 0.85rem; color: var(--text-muted);">유저네임 (name="username")</label>
+              <input type="text" id="reg-username" name="username" class="input-text" required placeholder="이름을 적어주세요..." value="윌리엄">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="reg-password" style="font-size: 0.85rem; color: var(--text-muted);">비밀번호 (name="password")</label>
+              <input type="password" id="reg-password" name="password" class="input-text" required value="p@ssword123">
+            </div>
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">시작 포켓몬 (name="pokemon")</span>
+              <div style="display: flex; gap: 16px;">
+                <label style="cursor: pointer;"><input type="radio" name="pokemon" value="파이리"> 파이리 🔥</label>
+                <label style="cursor: pointer;"><input type="radio" name="pokemon" value="꼬북이" checked> 꼬북이 💧</label>
+                <label style="cursor: pointer;"><input type="radio" name="pokemon" value="이상해씨"> 이상해씨 🍃</label>
+              </div>
+            </div>
+            <button type="submit" class="btn">가입 신청 (제출)</button>
+          </form>
+          <div style="margin-top: 8px;">
+            <div style="font-size: 0.85rem; color: var(--color-secondary); font-weight: 600; margin-bottom: 6px;">추출 완료된 데이터 객체 (Object):</div>
+            <pre class="json-output" id="form-json-output">{ "status": "제출 버튼을 클릭하면 이곳에 변환된 JSON 객체가 표시됩니다." }</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BOM (브라우저 객체 모델) -->
+    <section id="bom">
+      <div class="sec-header">
+        <span class="sec-number">07</span>
+        <h2 class="sec-title">BOM (Browser Object Model)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            웹 브라우저 창 그 자체와 관련된 크기, 타이머, 주소 경로, 스크롤 이동 등을 제어하기 위한 인터페이스입니다. 
+            최상위의 <code>window</code> 객체가 이 모델을 대변합니다.
+          </p>
+          <div class="highlight-tip">
+            ⏰ <strong>타이머 2대 천왕</strong><br>
+            - <code>setTimeout</code>: 일정 시간 후에 특정 함수를 단 한 번만 실행합니다.<br>
+            - <code>setInterval</code>: 일정 주기가 돌아올 때마다 함수를 영원히 반복 실행합니다. (중지는 <code>clearInterval</code>)
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 주기적인 상대적 스크롤 하강 타이머 작동
+const scrollTimer = setInterval(() => {
+  window.scrollBy(0, 50); // 아래 방향으로 50px 상대 이동
+}, 1000);
+
+// 2. 타이머 멈추기
+clearInterval(scrollTimer);
+
+// 3. 브라우저 크기 정보 얻기
+console.log(window.innerWidth, window.innerHeight);</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: 브라우저 속성 및 타이머 제어</div>
+          <div class="bom-info-grid">
+            <div class="bom-stat-card">
+              <div class="bom-stat-label">innerWidth</div>
+              <div class="bom-stat-val" id="bom-inner-w">- px</div>
+            </div>
+            <div class="bom-stat-card">
+              <div class="bom-stat-label">innerHeight</div>
+              <div class="bom-stat-val" id="bom-inner-h">- px</div>
+            </div>
+            <div class="bom-stat-card">
+              <div class="bom-stat-label">scrollY (스크롤)</div>
+              <div class="bom-stat-val" id="bom-scroll-y">0 px</div>
+            </div>
+            <div class="bom-stat-card">
+              <div class="bom-stat-label">글로벌 this 확인</div>
+              <div class="bom-stat-val" style="font-size: 0.85rem; padding-top: 4px;">window</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary" style="flex-grow: 1;" onclick="scrollPageBy(50)">아래로 50px 스크롤 이동 (scrollBy)</button>
+              <button class="btn btn-secondary" style="flex-grow: 1;" onclick="scrollPageTo(0)">맨 위로 스크롤 이동 (scrollTo)</button>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05)">
+              <button class="btn" id="btn-timer-toggle" onclick="toggleBomInterval()">1초 주기 타이머 작동 (setInterval)</button>
+              <div style="flex-grow: 1;">
+                <div style="font-size: 0.8rem; display: flex; justify-content: space-between;">
+                  <span>반복 카운트: <strong id="timer-count" style="color: var(--color-success);">0</strong></span>
+                  <span id="timer-status" style="color: var(--text-muted);">중지됨</span>
+                </div>
+                <div class="timer-progress-bar">
+                  <div class="timer-progress-fill" id="timer-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="terminal-log" id="bom-log" style="max-height: 90px;">
+            <div class="log-line"><span class="log-prefix">&gt;</span> 현재 화면 창 크기(innerWidth/Height) 및 스크롤 위치가 감지되었습니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. 웹 스토리지 & 클립보드 -->
+    <section id="storage">
+      <div class="sec-header">
+        <span class="sec-number">08</span>
+        <h2 class="sec-title">웹 스토리지 & 클립보드 (Storage & Clipboard)</h2>
+      </div>
+      <div class="grid-2">
+        <div class="theory-box">
+          <p>
+            사용자의 데이터를 서버 데이터베이스 없이도 로컬 브라우저 환경에 쉽게 저장하거나 컴퓨터의 클립보드 기능과 호환해 쓸 수 있게 돕는 유용한 브라우저 API 모음입니다.
+          </p>
+          <div class="highlight-warn">
+            📦 <strong>스토리지는 오직 문자열(String)만 기억합니다!</strong><br>
+            객체(Object)나 배열(Array)을 그대로 집어넣으면 강제로 <code>[object Object]</code> 문자로 으깨어 저장되므로, 반드시 <code>JSON.stringify()</code>를 사용해 문자 형태로 직렬화하여 담아야 온전히 데이터를 저장할 수 있습니다.
+          </div>
+          <div class="code-container">
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+<pre><code>// 1. 객체를 문자열로 가공해 로컬스토리지에 저장
+const user = { name: "홍길동" };
+localStorage.setItem("user", JSON.stringify(user));
+
+// 2. 문자열 형태로 가져와 다시 객체로 변환
+const data = JSON.parse(localStorage.getItem("user"));
+console.log(data.name); // "홍길동"
+
+// 3. 클립보드에 텍스트 복사하기
+navigator.clipboard.writeText("부자가 되는 법!");</code></pre>
+          </div>
+        </div>
+        
+        <div class="playground">
+          <div class="playground-title">실시간 체험존: 스토리지 비교 & 클립보드 복사</div>
+          <div class="storage-playground-layout">
+            
+            <div class="storage-visual-box">
+              <div class="storage-col">
+                <div class="storage-col-title">
+                  LocalStorage (영구)
+                  <span class="storage-count-badge" id="local-badge">0</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">브라우저를 완전히 껐다가 켜도 숫자가 계속 증가하며 데이터가 완벽히 보존됩니다.</p>
+                <button class="btn btn-sm btn-secondary" onclick="incrementStorage('local')" style="width: 100%;">값 증가시키기</button>
+              </div>
+              <div class="storage-col">
+                <div class="storage-col-title">
+                  SessionStorage (임시)
+                  <span class="storage-count-badge" id="session-badge" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.3); color: #99f6e4;">0</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">현재 탭 안에서는 보존되지만, 이 인터넷 탭을 완전히 닫으면 초기화됩니다.</p>
+                <button class="btn btn-sm btn-secondary" onclick="incrementStorage('session')" style="width: 100%;">값 증가시키기</button>
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 0.85rem; font-weight: 600;">📋 클립보드 복사 & 붙여넣기 테스터</span>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="input-text" id="clipboard-text-input" placeholder="복사할 문구를 입력하세요..." value="🔥 부자가 되는 비법: 오늘 하루도 즐겁게 코딩하기!">
+                <button class="btn" style="flex-shrink: 0;" onclick="copyToClipboard()">클립보드 복사</button>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                <button class="btn btn-secondary" onclick="readFromClipboard()">클립보드 데이터 가져와 붙여넣기</button>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">가져온 값: <strong id="clipboard-read-val" style="color: var(--color-success);">-</strong></span>
+              </div>
+            </div>
+            
+            <div class="terminal-log" id="storage-log" style="max-height: 90px;">
+              <div class="log-line"><span class="log-prefix">&gt;</span> 현재 스토리지 데이터 및 복사/붙여넣기 로그가 기록됩니다.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. 실무 종합 메모 앱 -->
+    <section id="memo-app" class="memo-section">
+      <div class="sec-header">
+        <span class="sec-number" style="background: linear-gradient(135deg, var(--color-success), var(--color-secondary));">🚀</span>
+        <h2 class="sec-title">실전 종합 연습: 영속 메모 앱 (Memo App)</h2>
+      </div>
+      <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
+        우리가 배운 <strong>DOM 조회(Read) + DOM 조작(Create/Delete) + Form 제어(Submit/PreventDefault) + 로컬스토리지 JSON 관리</strong>를 단 하나의 어플리케이션으로 뭉쳐 완성한 영속 메모장입니다.
+        이 메모장에 내용을 작성하고 새로고침 해보세요. 브라우저는 작성하신 내용을 평생 안전하게 기억합니다!
+      </p>
+
+      <form id="real-memo-writer" class="memo-form" onsubmit="handleMemoSubmit(event)">
+        <textarea required name="memoText" class="memo-textarea" placeholder="보존될 메모 내용을 자유롭게 적어보세요... (Shift + Enter 줄바꿈, Enter 제출)"></textarea>
+        <button class="btn" style="height: 60px; flex-shrink: 0; padding: 0 24px;">메모 등록</button>
+      </form>
+
+      <div class="memo-board" id="real-memo-board">
+        <!-- 메모들이 여기에 들어옵니다 -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* ==========================================
+       전역 설정 및 초기화
+       ========================================== */
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. 사이드바 스크롤 스파이 연동
+      initScrollSpy();
+      
+      // 2. BOM 정보 실시간 업데이트
+      updateBomInfo();
+      window.addEventListener("resize", updateBomInfo);
+      window.addEventListener("scroll", updateBomInfo);
+      
+      // 3. 로컬 및 세션스토리지 초기 뱃지 갱신
+      updateStorageBadges();
+      
+      // 4. 실전 종합 메모 렌더링
+      renderMemos();
+      
+      // 5. 폼 제출 핸들러 (이벤트 가로채기 실습)
+      const exampleForm = document.querySelector("#example-join-form");
+      exampleForm.addEventListener("submit", (event) => {
+        event.preventDefault(); // 기본 전송행위 방지
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData);
+        document.querySelector("#form-json-output").textContent = JSON.stringify(data, null, 2);
+      });
+
+      // 6. 이벤트 리스너 테스트 버튼 엮기
+      initEventListenerTests();
+
+      // 7. 실시간 입력창 상태 감지 엮기
+      initInputStatusTester();
+    });
+
+    /* ==========================================
+       사이드바 스크롤 스파이 (Scroll Spy)
+       ========================================== */
+    function initScrollSpy() {
+      const sections = document.querySelectorAll("section");
+      const navItems = document.querySelectorAll(".nav-item");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (window.scrollY >= (sectionTop - 150)) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navItems.forEach(item => {
+          item.classList.remove("active");
+          const href = item.querySelector("a").getAttribute("href").substring(1);
+          if (href === current) {
+            item.classList.add("active");
+          }
+        });
+      });
+    }
+
+    /* ==========================================
+       1. DOM 조회 실시간 기능
+       ========================================== */
+    function selectDom(type) {
+      const logBox = document.querySelector("#dom-read-log");
+      
+      // 하이라이트 초기화
+      document.querySelectorAll(".dom-preview-item").forEach(item => {
+        item.classList.remove("highlighted");
+      });
+      
+      let msg = "";
+      if (type === 'first-p') {
+        const item = document.querySelector(".dom-preview-item");
+        item.classList.add("highlighted");
+        msg = `const p1 = document.querySelector("p");\n// 결과: <p class="job" id="fighter-item"> (최초에 검색된 전사만 단독으로 하이라이트됩니다!)`;
+      } else if (type === 'id-healer') {
+        const item = document.querySelector("#healer-item");
+        item.classList.add("highlighted");
+        msg = `const p3 = document.querySelector("#healer");\n// 결과: <p class="job" id="healer"> (고유 ID인 #healer를 정밀 타격하여 가져왔습니다!)`;
+      } else if (type === 'class-job') {
+        const items = document.querySelectorAll(".job");
+        items.forEach(item => item.classList.add("highlighted"));
+        msg = `const p4 = document.querySelectorAll(".job");\n// 결과: [p, p, p] NodeList 형태 (클래스가 .job인 3명의 영웅들을 한 번에 선택하여 모두 하이라이트했습니다!)`;
+      } else if (type === 'reset') {
+        msg = `// 하이라이트 선택이 모두 초기화되었습니다.`;
+      }
+      
+      logBox.innerHTML = `<div class="log-line"><span class="log-prefix">&gt;</span> ${msg.replace(/\n/g, '<br><span class="log-prefix">&gt;</span> ')}</div>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    /* ==========================================
+       2. DOM 조작 실시간 기능
+       ========================================== */
+    function createDynamicBox() {
+      const textInput = document.querySelector("#dom-input-text");
+      const sandbox = document.querySelector("#sandbox");
+      const logBox = document.querySelector("#dom-manage-log");
+      
+      if (!textInput.value.trim()) {
+        alert("박스에 넣을 내용을 입력하세요!");
+        return;
+      }
+      
+      // 1. 요소 만들기
+      const newBox = document.createElement("div");
+      newBox.className = "dynamic-box";
+      newBox.textContent = textInput.value;
+      
+      // 2. 클릭시 클래스 토글하는 리스너 예약
+      newBox.addEventListener("click", (e) => {
+        if (e.target !== deleteBtn) {
+          newBox.classList.toggle("switch");
+          logBox.innerHTML = `<div class="log-line"><span class="log-prefix">&gt;</span> 박스를 클릭하여 .classList.toggle("switch")가 실행되었습니다! 현재 클래스 목록: [${newBox.className}]</div>`;
+        }
+      });
+      
+      // 3. 삭제 버튼 매달기
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "X";
+      deleteBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // 부모 클릭 전파 방지
+        newBox.remove(); // 스스로 삭제
+        logBox.innerHTML = `<div class="log-line"><span class="log-prefix">&gt;</span> 박스가 화면에서 영구히 삭제(newBox.remove())되었습니다.</div>`;
+      });
+      
+      newBox.append(deleteBtn);
+      
+      // 4. 샌드박스 컨테이너에 갖다붙이기
+      sandbox.append(newBox);
+      
+      logBox.innerHTML = `<div class="log-line"><span class="log-prefix">&gt;</span> document.createElement("div")와 .append(newBox)를 사용하여 새로운 요소를 안전하게 동적 생성했습니다!</div>`;
+      textInput.value = ""; // 초기화
+    }
+
+    /* ==========================================
+       3. 이벤트 리스너 테스트
+       ========================================== */
+    function initEventListenerTests() {
+      const eventLog = document.querySelector("#event-log");
+      
+      // 1. 프로퍼티 방식 테스트 (덮어쓰기 문제 시각화)
+      const btnProp = document.querySelector("#btn-prop-test");
+      btnProp.onclick = () => {
+        writeLog(eventLog, "[동작 A] 프로퍼티 버튼 클릭됨!");
+      };
+      // 두 번째로 덮어씀
+      btnProp.onclick = () => {
+        writeLog(eventLog, "[동작 B] 프로퍼티 버튼이 동작 A를 완전히 덮어쓰고 혼자만 작동합니다!");
+      };
+
+      // 2. addEventListener 방식 테스트 (복수 실행)
+      const btnListener = document.querySelector("#btn-listener-test");
+      btnListener.addEventListener("click", () => {
+        writeLog(eventLog, "[동작 1] 리스너 첫 번째 함수 실행 완료!");
+      });
+      btnListener.addEventListener("click", () => {
+        writeLog(eventLog, "[동작 2] 리스너 두 번째 함수도 병렬로 실행 완료!");
+      });
+
+      // 3. 1회용 버튼 테스트
+      const btnOnce = document.querySelector("#btn-once-test");
+      const onceHandler = () => {
+        writeLog(eventLog, "[1회용] 클릭되었습니다! 이제 저를 클릭하는 리스너(removeEventListener)는 완전히 소멸됩니다.");
+        btnOnce.removeEventListener("click", onceHandler);
+        btnOnce.textContent = "리스너 삭제됨 (클릭해도 이제 반응이 없어요)";
+        btnOnce.classList.add("btn-secondary");
+      };
+      btnOnce.addEventListener("click", onceHandler);
+    }
+
+    function writeLog(container, message) {
+      const time = new Date().toLocaleTimeString();
+      container.innerHTML += `<div class="log-line"><span class="log-prefix">[${time}] &gt;</span> ${message}</div>`;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    /* ==========================================
+       4. 이벤트 타입 & 진입점 실시간 기능
+       ========================================== */
+    function initInputStatusTester() {
+      const testInput = document.querySelector("#event-test-input");
+      const realText = document.querySelector("#realtime-text");
+      const realLen = document.querySelector("#realtime-len");
+      const typeLog = document.querySelector("#event-type-log");
+      
+      // 타이핑 실시간 감지
+      testInput.addEventListener("input", (e) => {
+        const val = e.target.value;
+        realText.textContent = val ? val : "-";
+        realLen.textContent = val.length;
+        writeLog(typeLog, `[input 이벤트] 실시간 타이핑 감지 -> 현재값: "${val}"`);
+      });
+      
+      // 입력 확정 감지 (포커스 잃고 엔터치거나 마우스 밖 클릭시)
+      testInput.addEventListener("change", (e) => {
+        writeLog(typeLog, `[change 이벤트] 포커스가 해제되어 값이 최종 변경 및 확정됨! -> 확정값: "${e.target.value}"`);
+      });
+      
+      // 포커스 취득
+      testInput.addEventListener("focus", (e) => {
+        e.target.style.backgroundColor = "rgba(139, 92, 246, 0.15)";
+        e.target.style.borderColor = "var(--color-primary)";
+        writeLog(typeLog, `[focus 이벤트] 입력창에 마우스 클릭 커서 활성화!`);
+      });
+      
+      // 포커스 소실
+      testInput.addEventListener("blur", (e) => {
+        e.target.style.backgroundColor = "";
+        e.target.style.borderColor = "";
+        writeLog(typeLog, `[blur 이벤트] 다른 영역을 클릭하여 입력창 포커스가 해제됨.`);
+      });
+    }
+
+    /* ==========================================
+       5. 다양한 Input 실시간 값/타입 디버거
+       ========================================== */
+    function debugInputValues() {
+      const ageVal = document.querySelector("#form-age").value;
+      const colorVal = document.querySelector("#form-color").value;
+      const rangeVal = document.querySelector("#form-satisfaction").value;
+      const petVal = document.querySelector("#form-pet").value;
+      const agreeVal = document.querySelector("#form-agree").checked;
+      
+      const debugBody = document.querySelector("#input-debug-body");
+      debugBody.innerHTML = `
+        <tr>
+          <td>나이 (type="number")</td>
+          <td>.value</td>
+          <td style="color: var(--color-warning); font-weight: 600;">"${ageVal}"</td>
+          <td><span class="result-type-badge">${typeof ageVal}</span></td>
+        </tr>
+        <tr>
+          <td>색상 선택기 (type="color")</td>
+          <td>.value</td>
+          <td style="color: ${colorVal}; font-weight: 700;">${colorVal}</td>
+          <td><span class="result-type-badge">${typeof colorVal}</span></td>
+        </tr>
+        <tr>
+          <td>만족도 슬라이더 (type="range")</td>
+          <td>.value</td>
+          <td style="color: var(--color-secondary);">${rangeVal}</td>
+          <td><span class="result-type-badge">${typeof rangeVal}</span></td>
+        </tr>
+        <tr>
+          <td>반려동물 셀렉트박스</td>
+          <td>.value</td>
+          <td>Value ID: ${petVal}</td>
+          <td><span class="result-type-badge">${typeof petVal}</span></td>
+        </tr>
+        <tr>
+          <td>동의 여부 (type="checkbox")</td>
+          <td style="color: var(--color-success);">.checked</td>
+          <td style="color: ${agreeVal ? 'var(--color-success)' : 'var(--color-danger)'}; font-weight: 700;">${agreeVal}</td>
+          <td><span class="result-type-badge">${typeof agreeVal}</span></td>
+        </tr>
+      `;
+    }
+
+    /* ==========================================
+       7. BOM 제어 실시간 기능
+       ========================================== */
+    let bomIntervalId = null;
+    let timerCounter = 0;
+
+    function updateBomInfo() {
+      document.querySelector("#bom-inner-w").textContent = window.innerWidth + " px";
+      document.querySelector("#bom-inner-h").textContent = window.innerHeight + " px";
+      document.querySelector("#bom-scroll-y").textContent = Math.round(window.scrollY) + " px";
+    }
+
+    function scrollPageBy(amount) {
+      window.scrollBy({ top: amount, left: 0, behavior: 'smooth' });
+      const bomLog = document.querySelector("#bom-log");
+      writeLog(bomLog, `window.scrollBy({top: ${amount}, behavior: 'smooth'}) 스크롤 상대이동 성공!`);
+    }
+
+    function scrollPageTo(pos) {
+      window.scrollTo({ top: pos, left: 0, behavior: 'smooth' });
+      const bomLog = document.querySelector("#bom-log");
+      writeLog(bomLog, `window.scrollTo({top: ${pos}, behavior: 'smooth'}) 맨 위 절대좌표 이동 성공!`);
+    }
+
+    function toggleBomInterval() {
+      const btn = document.querySelector("#btn-timer-toggle");
+      const statusText = document.querySelector("#timer-status");
+      const bomLog = document.querySelector("#bom-log");
+      const progressBar = document.querySelector("#timer-progress");
+      
+      if (bomIntervalId) {
+        // 타이머 중지
+        clearInterval(bomIntervalId);
+        bomIntervalId = null;
+        btn.textContent = "1초 주기 타이머 작동 (setInterval)";
+        btn.classList.remove("btn-danger");
+        statusText.textContent = "중지됨";
+        statusText.style.color = "var(--text-muted)";
+        progressBar.style.width = "0%";
+        writeLog(bomLog, "setInterval 반복 타이머가 강제 종료(clearInterval)되었습니다.");
+      } else {
+        // 타이머 시작
+        timerCounter = 0;
+        document.querySelector("#timer-count").textContent = timerCounter;
+        statusText.textContent = "작동 중";
+        statusText.style.color = "var(--color-success)";
+        btn.textContent = "반복 타이머 일시정지 (clearInterval)";
+        btn.classList.add("btn-danger");
+        writeLog(bomLog, "setInterval 반복 타이머 가동을 시작했습니다!");
+        
+        let progressVal = 0;
+        bomIntervalId = setInterval(() => {
+          timerCounter++;
+          document.querySelector("#timer-count").textContent = timerCounter;
+          writeLog(bomLog, `[반복 ${timerCounter}회차] 1초가 경과되어 예약 함수가 실행되었습니다!`);
+          
+          // 게이지 리셋 애니메이션
+          progressBar.style.width = "0%";
+          setTimeout(() => {
+            progressBar.style.width = "100%";
+          }, 50);
+          
+        }, 1000);
+        
+        progressBar.style.width = "100%";
+      }
+    }
+
+    /* ==========================================
+       8. 웹 스토리지 & 클립보드 기능
+       ========================================== */
+    function updateStorageBadges() {
+      const localCount = localStorage.getItem("counter") ?? 0;
+      const sessionCount = sessionStorage.getItem("counter") ?? 0;
+      document.querySelector("#local-badge").textContent = localCount;
+      document.querySelector("#session-badge").textContent = sessionCount;
+    }
+
+    function incrementStorage(type) {
+      const storageLog = document.querySelector("#storage-log");
+      if (type === 'local') {
+        let count = localStorage.getItem("counter") ?? 0;
+        count++;
+        localStorage.setItem("counter", count);
+        writeLog(storageLog, `LocalStorage "counter" 값을 ${count}로 세팅 완료 (새로고침해도 보존됨)`);
+      } else {
+        let count = sessionStorage.getItem("counter") ?? 0;
+        count++;
+        sessionStorage.setItem("counter", count);
+        writeLog(storageLog, `SessionStorage "counter" 값을 ${count}로 세팅 완료 (인터넷 탭 닫을시 즉시 폭파됨)`);
+      }
+      updateStorageBadges();
+    }
+
+    async function copyToClipboard() {
+      const input = document.querySelector("#clipboard-text-input");
+      const storageLog = document.querySelector("#storage-log");
+      if (!input.value.trim()) {
+        alert("복사할 내용을 입력하세요!");
+        return;
+      }
+      
+      try {
+        await navigator.clipboard.writeText(input.value);
+        writeLog(storageLog, `성공적으로 클립보드 영역에 텍스트 복사(writeText) 완료!`);
+      } catch (err) {
+        writeLog(storageLog, `복사 실패: ${err}`);
+      }
+    }
+
+    async function readFromClipboard() {
+      const storageLog = document.querySelector("#storage-log");
+      const resultSpan = document.querySelector("#clipboard-read-val");
+      
+      try {
+        const text = await navigator.clipboard.readText();
+        resultSpan.textContent = text ? text : "(클립보드가 비어있음)";
+        writeLog(storageLog, `클립보드에서 복사된 내용 읽어오기(readText) 성공!`);
+      } catch (err) {
+        resultSpan.textContent = "권한 거부됨";
+        writeLog(storageLog, `읽기 실패 (브라우저 권한 허용이 필요합니다): ${err}`);
+      }
+    }
+
+    /* ==========================================
+       9. 실전 영속 메모 앱 기능
+       ========================================== */
+    function handleMemoSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const textarea = form.memoText;
+      const text = textarea.value.trim();
+      
+      if (!text) return;
+      
+      // 1. 기존 스토리지 목록을 불러오기 (없으면 빈 객체)
+      const prevMemos = localStorage.getItem("study_memos") ?? "{}";
+      const memoMap = JSON.parse(prevMemos);
+      
+      // 2. 고유 키값 생성 및 매핑
+      const memoId = "memo_" + Date.now();
+      memoMap[memoId] = {
+        id: memoId,
+        content: text,
+        time: new Date().toLocaleString()
+      };
+      
+      // 3. 다시 JSON 가공하여 스토리지 갱신
+      localStorage.setItem("study_memos", JSON.stringify(memoMap));
+      
+      // 4. 화면 초기화 후 재렌더링
+      textarea.value = "";
+      renderMemos();
+    }
+
+    function renderMemos() {
+      const board = document.querySelector("#real-memo-board");
+      board.innerHTML = ""; // 클리어
+      
+      const prevMemos = localStorage.getItem("study_memos") ?? "{}";
+      const memoMap = JSON.parse(prevMemos);
+      
+      const keys = Object.keys(memoMap).reverse(); // 최신순으로 정렬
+      
+      if (keys.length === 0) {
+        board.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 24px; color: var(--text-muted); border: 1px dashed rgba(255,255,255,0.06); border-radius: 8px;">
+            아직 생성된 영속 메모가 없습니다. 위의 입력창에 메모를 남겨보세요! 📝
+          </div>
+        `;
+        return;
+      }
+      
+      keys.forEach(id => {
+        const item = memoMap[id];
+        
+        const card = document.createElement("div");
+        card.className = "memo-card";
+        
+        const p = document.createElement("p");
+        p.className = "memo-card-text";
+        p.textContent = item.content;
+        
+        const footer = document.createElement("div");
+        footer.className = "memo-card-footer";
+        
+        const spanTime = document.createElement("span");
+        spanTime.textContent = item.time;
+        
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "memo-delete-btn";
+        deleteBtn.textContent = "삭제";
+        deleteBtn.addEventListener("click", () => {
+          deleteMemo(item.id);
+        });
+        
+        footer.append(spanTime, deleteBtn);
+        card.append(p, footer);
+        board.append(card);
+      });
+    }
+
+    function deleteMemo(id) {
+      const prevMemos = localStorage.getItem("study_memos") ?? "{}";
+      const memoMap = JSON.parse(prevMemos);
+      
+      // 해당 ID 키 삭제
+      delete memoMap[id];
+      
+      localStorage.setItem("study_memos", JSON.stringify(memoMap));
+      renderMemos();
+    }
+
+    /* ==========================================
+       코드 복사 헬퍼
+       ========================================== */
+    function copyCode(btn) {
+      const codeBlock = btn.nextElementSibling.querySelector("code");
+      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => {
+          btn.textContent = "Copy";
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
