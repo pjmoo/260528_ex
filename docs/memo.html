@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>메모 하세요!</title>
+  </head>
+  <body>
+    <section>
+      <!-- 작성  -->
+      <form id="writer" style="display: flex; gap: 8px">
+        <textarea required name="text" style="resize: none"></textarea>
+        <button>제출</button>
+      </form>
+    </section>
+    <section id="board">
+      <!-- 작성 결과물 -->
+    </section>
+    <script>
+      const writer = document.querySelector("#writer");
+      const board = document.querySelector("#board");
+      writer.addEventListener("submit", (event) => {
+        event.preventDefault(); // 기본 폼 작업 X
+        const formData = new FormData(event.target);
+        const text = formData.get("text");
+        console.log("text", text);
+        const memo = document.createElement("p");
+        memo.textContent = text;
+        board.append(memo);
+      });
+    </script>
+  </body>
+</html>

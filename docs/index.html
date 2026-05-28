@@ -1,11 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>메모 앱에 오신 걸 환영합니다!</title>
-</head>
-<body>
-    
-</body>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+      "
+    >
+      <h1>메모 앱에 오신 걸 환영합니다!</h1>
+      <!-- 1. button을 a 태그로 감싸기 -->
+      <a href="memo.html" target="_self">
+        <button style="padding: 12px">메모하러 가기 1</button>
+      </a>
+      <!-- 2. JS 지금 탭에서 이동하기 -->
+      <button id="btn2" style="padding: 12px">메모하러 가기 2</button>
+      <!-- 3. JS 새로운 탭/페이지 띄우기 -->
+      <!-- <a href="memo.html" target="_blank"></a> -->
+      <button id="btn3" style="padding: 12px">메모하러 가기 3</button>
+    </div>
+    <script>
+      const btn2 = document.querySelector("#btn2");
+      btn2.addEventListener("click", useLocationHref);
+      function useLocationHref() {
+        location.href = "memo.html";
+        // 지금 경로 127.0.0.1:5500/docs/{...}
+        // {...}를 교체
+        // URL을 다 입력하면 그곳으로 이동
+        // location.href = "https://google.com";
+      }
+      const btn3 = document.querySelector("#btn3");
+      btn3.addEventListener("click", useWindowOpen);
+      function useWindowOpen() {
+        window.open("memo.html");
+        // URL을 다 입력하면 그곳으로 이동
+      }
+    </script>
+  </body>
 </html>
