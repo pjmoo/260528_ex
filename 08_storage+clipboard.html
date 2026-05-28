@@ -1,18 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>스토리지, 클립보드</title>
-</head>
-<body>
+  </head>
+  <body>
+    <button id="copy">복사</button>
     <script>
-        
-        let a=sessionStorage.getItem("counter") ?? 0;
-        a++;
-        console.log(a);
-        sessionStorage.setItem("counter", a);
+      // localStorage. sessionStorage
+      //   sessionStorage.setItem("counter", 0)
+      //   sessionStorage.getItem("counter")
+      //   console.log(sessionStorage.getItem("counter")); // null
+      // sessionStorage
+      let a = sessionStorage.getItem("counter") ?? 0;
+      a++;
+      console.log("sessionStorage", a);
+      sessionStorage.setItem("counter", a);
+      // 출처 & 특정 탭에 종속 (탭 종료시 소멸)
+      // localStorage
+      let b = localStorage.getItem("counter") ?? 0;
+      b++;
+      console.log("localStorage", b);
+      localStorage.setItem("counter", b);
+      // storage <- localStorage
+      window.addEventListener("storage", () => {
+        console.log("스토리지 변동!");
+      });
+      // 출처만 같으면 영속
 
+      // 주의할 점 : local/session storage -> key string, value string. 알아서 string으로 변환
+
+      const o = {
+        name: "윌리엄",
+        job: "반찬가게 사장",
+      };
+      localStorage.setItem("o", o);
+      localStorage.setItem("o2", JSON.stringify(o));
+      console.log(localStorage.getItem("o"));
+      console.log(localStorage.getItem("o2"));
+      console.log(JSON.parse(localStorage.getItem("o2")));
+      const aa = ["김치", "간장게장"];
+      localStorage.setItem("aa", aa);
+      localStorage.setItem("aa2", JSON.stringify(aa));
+      console.log(localStorage.getItem("aa"));
+      console.log(localStorage.getItem("aa2"));
+      console.log(JSON.parse(localStorage.getItem("aa2")));
+      // ...
+      document.querySelector("#copy").addEventListener("click", async () => {
+        // 복사된 데이터가 임시 존재하는 메모리 공간 => 클립보드
+        console.log(`기존 데이터 : ${await navigator.clipboard.readText()}`);
+        console.log("부자가 되는 방법이 복사가 되었습니다");
+        navigator.clipboard.writeText("부자가 되는 방법");
+      });
     </script>
-</body>
+  </body>
 </html>
